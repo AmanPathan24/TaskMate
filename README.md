@@ -105,10 +105,10 @@ The frontend application runs on `http://localhost:5173`.
 | | Fully-Integrated Search Pill | `Done` | Migrated dashboard search & filters into an active top navigation search pill. Synced search, priority, status, and sort filters with the URL query parameters using `useSearchParams`. |
 | **Backend** | JWT Student Authentication | `Done` | Validates credentials during login and register events, cryptographically signing JSON Web Tokens with a 24-hour expiration. |
 | | Task API Endpoints | `Done` | Fully protected routes (`/api/tasks`) implementing GET, POST, PUT, and DELETE operations, secured by custom token-verification middleware. |
-| | Multi-criteria Filtering & Sorting | `[x]` | Backend parses regex queries for search terms, strictly matches status/priority categories, and dynamically builds Mongoose sort options. |
-| **Database** | MongoDB Atlas Integration | `[x]` | Configured a Mongoose schema structure. Establishes clean relational references connecting individual tasks to user collections using `userId`. |
-| **Bonus** | Dark/Light Mode Shift | `[x]` | Implemented CSS custom variables and theme context. Integrates smooth visual transitions and toggles between user background assets (`Light_bg.png` and `Dark_bg.png`). |
-| | Serverless Vercel Deployment | `[x]` | Configured `backend/vercel.json` and server exports so both services deploy seamlessly on Vercel's cloud infrastructure. |
-| | Cloudinary Photo Uploads | `[x]` | Wire profile picture uploads through Multer directly into a custom Cloudinary folder (`TaskMate_Profile_Pics`), storing remote secure URLs on Atlas. |
-| | Task Pagination | `[x]` | Limits task grids to 6 items per page. The backend runs count calculations and `skip`/`limit` offsets, rendering interactive circle pagination buttons on the frontend. |
-| **Git** | Structured Commits | `[x]` | Initialized repository, managed `.gitignore` parameters (filtering environment variables and documents), and executed clean, descriptive commit cycles. |
+| | Multi-criteria Filtering & Sorting | `Done` | Backend parses regex queries for search terms, strictly matches status/priority categories, and dynamically builds Mongoose sort options. |
+| **Database** | MongoDB Atlas Integration | `Done` | Configured a Mongoose schema structure. Establishes clean relational references connecting individual tasks to user collections using `userId`. |
+| **Bonus** | Dark/Light Mode Shift | `Done` | Implemented CSS custom variables and theme context. Integrates smooth visual transitions and toggles between user background assets (`Light_bg.png` and `Dark_bg.png`). |
+| | Serverless Vercel Deployment | `Done` | Configured `backend/vercel.json` and server exports so both services deploy seamlessly on Vercel's cloud infrastructure. |
+| | Cloudinary Photo Uploads | `Done` | Wire profile picture uploads through Multer directly into a custom Cloudinary folder (`TaskMate_Profile_Pics`), storing remote secure URLs on Atlas. |
+| | Task Pagination | `Done` | Limits task grids to 6 items per page. The backend runs count calculations and `skip`/`limit` offsets, rendering interactive circle pagination buttons on the frontend. |
+| **Git** | Structured Commits |`Done` | Initialized repository, managed `.gitignore` parameters (filtering environment variables and documents), and executed clean, descriptive commit cycles. |
