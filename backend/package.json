@@ -1,5 +1,5 @@
 {
-  "name": "student-task-manager-backend",
+  "name": "taskmate-backend",
   "version": "1.0.0",
   "description": "Backend API for Student Task Management System",
   "main": "server.js",

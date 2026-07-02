@@ -1,6 +1,6 @@
-# Student Task Management System
+# Taskmate
 
-This is a full-stack task management web application designed for students. It allows users to register, log in, create tasks, and manage them with priority, due date, status tracking, search, and filter options.
+This is a full-stack student task management web application. It allows users to register, log in, create tasks, and manage them with priority, due date, status tracking, search, and filter options.
 
 ## Project Structure
 
