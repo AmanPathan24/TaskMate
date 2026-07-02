@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { 
-  Plus, Search, Edit2, Trash2, Calendar, 
-  X, AlertCircle, ClipboardList 
+import {
+  Plus, Search, Edit2, Trash2, Calendar,
+  X, AlertCircle, ClipboardList
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -13,12 +13,10 @@ const Dashboard = () => {
   const isAuthenticated = !!token;
   const navigate = useNavigate();
 
-  // Task List States
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Search, Filter & Pagination states wired directly to searchParams URL query variables
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get('search') || '';
   const statusFilter = searchParams.get('status') || '';
@@ -28,18 +26,15 @@ const Dashboard = () => {
 
   const [totalPages, setTotalPages] = useState(1);
 
-  // Modal States
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  
-  // Form States
+
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState('medium');
   const [taskStatus, setTaskStatus] = useState('pending');
 
-  // Helper to change filters and reset active page to 1
   const handleFilterChange = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
@@ -51,14 +46,12 @@ const Dashboard = () => {
     setSearchParams(newParams);
   };
 
-  // Helper to switch pages
   const handlePageChange = (page) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('page', page);
     setSearchParams(newParams);
   };
 
-  // Load Tasks
   const fetchTasks = async () => {
     if (!token) return;
     setLoading(true);
@@ -92,14 +85,12 @@ const Dashboard = () => {
     }
   };
 
-  // Load tasks on mount or URL state change
   useEffect(() => {
     if (isAuthenticated) {
       fetchTasks();
     }
   }, [isAuthenticated, currentPage, search, statusFilter, priorityFilter, sortBy]);
 
-  // Handle Modal Open (Create/Edit)
   const openModal = (task = null) => {
     if (task) {
       setEditingTask(task);
@@ -119,13 +110,11 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
-  // Close Modal
   const closeModal = () => {
     setShowModal(false);
     setEditingTask(null);
   };
 
-  // Create or Update Task
   const handleSaveTask = async (e) => {
     e.preventDefault();
     if (!taskTitle.trim()) return;
@@ -141,7 +130,6 @@ const Dashboard = () => {
 
       let response;
       if (editingTask) {
-        // Update
         response = await fetch(`${API_URL}/api/tasks/${editingTask.id}`, {
           method: 'PUT',
           headers: {
@@ -151,7 +139,6 @@ const Dashboard = () => {
           body: JSON.stringify(taskData)
         });
       } else {
-        // Create
         response = await fetch(`${API_URL}/api/tasks`, {
           method: 'POST',
           headers: {
@@ -174,7 +161,6 @@ const Dashboard = () => {
     }
   };
 
-  // Toggle Task Status (Pending / Completed)
   const handleToggleStatus = async (task) => {
     try {
       const nextStatus = task.status === 'completed' ? 'pending' : 'completed';
@@ -195,7 +181,6 @@ const Dashboard = () => {
     }
   };
 
-  // Delete Task
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
     try {
@@ -216,7 +201,6 @@ const Dashboard = () => {
     }
   };
 
-  // Date formatter
   const formatDate = (dateStr) => {
     if (!dateStr) return 'No due date';
     const date = new Date(dateStr);
@@ -227,7 +211,6 @@ const Dashboard = () => {
     });
   };
 
-  // Render Landing View
   if (!isAuthenticated) {
     return (
       <div className="container" style={{ minHeight: 'calc(100vh - 160px)' }}>
@@ -252,7 +235,6 @@ const Dashboard = () => {
 
   return (
     <div className="container dashboard-container">
-      {/* Header section */}
       <div className="dashboard-header">
         <div className="dashboard-title">
           <h1>My Study Dashboard</h1>
@@ -264,7 +246,6 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* Error state */}
       {error && (
         <div className="auth-error" style={{ width: '100%' }}>
           <AlertCircle size={16} />
@@ -272,7 +253,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Task List Grid */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-muted)' }}>
           Loading your study workspace...
@@ -324,16 +304,16 @@ const Dashboard = () => {
                     {formatDate(task.dueDate)}
                   </span>
                   <div className="task-card-actions">
-                    <button 
-                      className="action-btn" 
-                      onClick={() => openModal(task)} 
+                    <button
+                      className="action-btn"
+                      onClick={() => openModal(task)}
                       title="Edit Task"
                     >
                       <Edit2 size={15} />
                     </button>
-                    <button 
-                      className="action-btn btn-delete" 
-                      onClick={() => handleDeleteTask(task.id)} 
+                    <button
+                      className="action-btn btn-delete"
+                      onClick={() => handleDeleteTask(task.id)}
                       title="Delete Task"
                     >
                       <Trash2 size={15} />
@@ -344,11 +324,10 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {/* Pagination Navigation */}
           {totalPages > 1 && (
             <div className="pagination-container">
-              <button 
-                className="pagination-nav-btn" 
+              <button
+                className="pagination-nav-btn"
                 onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                 disabled={currentPage === 1}
               >
@@ -365,8 +344,8 @@ const Dashboard = () => {
                   </button>
                 ))}
               </div>
-              <button 
-                className="pagination-nav-btn" 
+              <button
+                className="pagination-nav-btn"
                 onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
@@ -377,7 +356,6 @@ const Dashboard = () => {
         </>
       )}
 
-      {/* Task Creation & Editing Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-container">

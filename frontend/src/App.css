@@ -1,4 +1,3 @@
-/* Layout styling for the overall app wrapper */
 .app-container {
   display: flex;
   flex-direction: column;

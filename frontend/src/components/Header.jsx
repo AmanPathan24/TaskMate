@@ -27,17 +27,15 @@ const Header = () => {
     } else {
       newParams.delete(key);
     }
-    // Reset page to 1 when search or filter changes
+
     newParams.delete('page');
     setSearchParams(newParams);
 
-    // If user is on a different page, route them back to dashboard with the queries
     if (window.location.pathname !== '/') {
       navigate(`/?${newParams.toString()}`);
     }
   };
 
-  // Toggle theme (Dark Mode bonus)
   const toggleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(nextTheme);
@@ -45,12 +43,10 @@ const Header = () => {
     localStorage.setItem('theme', nextTheme);
   };
 
-  // Set theme on initial load
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -68,7 +64,6 @@ const Header = () => {
   };
 
   const handleLogoClick = () => {
-    // Clear filters and go home
     setSearchParams({});
     navigate('/');
   };
@@ -76,13 +71,11 @@ const Header = () => {
   return (
     <header className="header-wrapper">
       <div className="container header-container">
-        {/* Left: Brand Logo */}
         <div className="header-logo" onClick={handleLogoClick}>
           <img src="/TaskMate Logo.png" alt="TaskMate Logo" className="header-logo-img" />
           <span>TaskMate</span>
         </div>
 
-        {/* Middle: Airbnb style Interactive Search Pill */}
         {isAuthenticated && (
           <div className="search-pill">
             <div className="search-pill-item">
@@ -94,7 +87,7 @@ const Header = () => {
                 onChange={(e) => handleParamChange('search', e.target.value)}
               />
             </div>
-            
+
             <div className="search-pill-item">
               <select
                 className="search-pill-select"
@@ -134,14 +127,13 @@ const Header = () => {
                 <option value="title:asc">Sort: A-Z</option>
               </select>
             </div>
-            
+
             <button className="search-pill-btn" onClick={() => navigate('/')}>
               <Search size={14} />
             </button>
           </div>
         )}
 
-        {/* Right: Actions */}
         <div className="header-actions">
           <button
             className="dark-mode-toggle"
@@ -156,9 +148,9 @@ const Header = () => {
               <Menu size={18} className="profile-trigger-menu" />
               <div className="profile-avatar">
                 {isAuthenticated && user?.profileImage ? (
-                  <img 
-                    src={user.profileImage.startsWith('http') ? user.profileImage : `${API_URL}${user.profileImage}`} 
-                    alt={user.name} 
+                  <img
+                    src={user.profileImage.startsWith('http') ? user.profileImage : `${API_URL}${user.profileImage}`}
+                    alt={user.name}
                   />
                 ) : isAuthenticated && user?.name ? (
                   user.name.charAt(0).toUpperCase()

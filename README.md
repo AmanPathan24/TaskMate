@@ -99,12 +99,12 @@ The frontend application runs on `http://localhost:5173`.
 
 | Category | Requirement / Feature | Status | Implementation Justification |
 | :--- | :--- | :---: | :--- |
-| **Frontend** | Student Registration & Log In | `[x]` | Built using interactive forms in React with complete validation rules. Password requires a minimum of 6 characters. |
-| | Responsive Airbnb-Style Layout | `[x]` | Beautiful glassmorphic UI utilizing translucent layers (`rgba`) and `backdrop-filter: blur(20px)` so custom light/dark backgrounds glow through. Fully responsive across mobiles, tablets, and desktops. |
-| | Task CRUD Operations | `[x]` | Form modals allow student users to create, view, update status (Pending / In Progress / Completed), modify priorities, edit titles/descriptions, and delete study tasks. |
-| | Fully-Integrated Search Pill | `[x]` | Migrated dashboard search & filters into an active top navigation search pill. Synced search, priority, status, and sort filters with the URL query parameters using `useSearchParams`. |
-| **Backend** | JWT Student Authentication | `[x]` | Validates credentials during login and register events, cryptographically signing JSON Web Tokens with a 24-hour expiration. |
-| | Task API Endpoints | `[x]` | Fully protected routes (`/api/tasks`) implementing GET, POST, PUT, and DELETE operations, secured by custom token-verification middleware. |
+| **Frontend** | Student Registration & Log In | `Done` | Built using interactive forms in React with complete validation rules. Password requires a minimum of 6 characters. |
+| | Responsive Layout | `Done` | Beautiful glassmorphic UI utilizing translucent layers (`rgba`) and `backdrop-filter: blur(20px)` so custom light/dark backgrounds glow through. Fully responsive across mobiles, tablets, and desktops. |
+| | Task CRUD Operations | `Done` | Form modals allow student users to create, view, update status (Pending / In Progress / Completed), modify priorities, edit titles/descriptions, and delete study tasks. |
+| | Fully-Integrated Search Pill | `Done` | Migrated dashboard search & filters into an active top navigation search pill. Synced search, priority, status, and sort filters with the URL query parameters using `useSearchParams`. |
+| **Backend** | JWT Student Authentication | `Done` | Validates credentials during login and register events, cryptographically signing JSON Web Tokens with a 24-hour expiration. |
+| | Task API Endpoints | `Done` | Fully protected routes (`/api/tasks`) implementing GET, POST, PUT, and DELETE operations, secured by custom token-verification middleware. |
 | | Multi-criteria Filtering & Sorting | `[x]` | Backend parses regex queries for search terms, strictly matches status/priority categories, and dynamically builds Mongoose sort options. |
 | **Database** | MongoDB Atlas Integration | `[x]` | Configured a Mongoose schema structure. Establishes clean relational references connecting individual tasks to user collections using `userId`. |
 | **Bonus** | Dark/Light Mode Shift | `[x]` | Implemented CSS custom variables and theme context. Integrates smooth visual transitions and toggles between user background assets (`Light_bg.png` and `Dark_bg.png`). |

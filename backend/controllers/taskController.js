@@ -16,11 +16,8 @@ const mapTask = (t) => ({
 const getTasks = async (req, res) => {
   try {
     const { search, status, priority, sortBy, page = 1, limit = 6 } = req.query;
-    
-    // Base filter
     const filter = { userId: req.userId };
 
-    // Search by title or description
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -28,17 +25,14 @@ const getTasks = async (req, res) => {
       ];
     }
 
-    // Filter by status
     if (status) {
       filter.status = status;
     }
 
-    // Filter by priority
     if (priority) {
       filter.priority = priority;
     }
 
-    // Sorting options
     let sortOption = { createdAt: -1 };
     if (sortBy) {
       const [field, order] = sortBy.split(':');

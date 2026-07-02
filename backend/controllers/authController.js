@@ -17,11 +17,10 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Check if profile image file was uploaded
+
     let profileImage = null;
     if (req.file) {
-      profileImage = req.file.path; // Cloudinary secure HTTPS URL
+      profileImage = req.file.path;
     }
 
     const newUser = await User.create({
