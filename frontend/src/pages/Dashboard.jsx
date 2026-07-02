@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { 
   Plus, Search, Edit2, Trash2, Calendar, 
@@ -17,14 +17,14 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Search & Filter States
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [priorityFilter, setPriorityFilter] = useState('');
-  const [sortBy, setSortBy] = useState('createdAt:desc');
+  // Search, Filter & Pagination states wired directly to searchParams URL query variables
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get('search') || '';
+  const statusFilter = searchParams.get('status') || '';
+  const priorityFilter = searchParams.get('priority') || '';
+  const sortBy = searchParams.get('sortBy') || 'createdAt:desc';
+  const currentPage = parseInt(searchParams.get('page')) || 1;
 
-  // Pagination States
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   // Modal States
@@ -37,6 +37,25 @@ const Dashboard = () => {
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState('medium');
   const [taskStatus, setTaskStatus] = useState('pending');
+
+  // Helper to change filters and reset active page to 1
+  const handleFilterChange = (key, value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set(key, value);
+    } else {
+      newParams.delete(key);
+    }
+    newParams.delete('page');
+    setSearchParams(newParams);
+  };
+
+  // Helper to switch pages
+  const handlePageChange = (page) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', page);
+    setSearchParams(newParams);
+  };
 
   // Load Tasks
   const fetchTasks = async () => {
@@ -72,12 +91,7 @@ const Dashboard = () => {
     }
   };
 
-  // Reset page to 1 on search/filter changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, statusFilter, priorityFilter, sortBy]);
-
-  // Load tasks on mount or dependency change
+  // Load tasks on mount or URL state change
   useEffect(() => {
     if (isAuthenticated) {
       fetchTasks();
@@ -249,54 +263,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* Filter and controls bar */}
-      <div className="controls-bar">
-        <div className="search-input-wrapper">
-          <Search size={16} className="search-icon-left" />
-          <input
-            type="text"
-            className="search-bar-input"
-            placeholder="Search tasks by title or description..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
 
-        <div className="filters-group">
-          <select
-            className="filter-select"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
-
-          <select
-            className="filter-select"
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-          >
-            <option value="">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-
-          <select
-            className="filter-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="createdAt:desc">Newest First</option>
-            <option value="dueDate:asc">Soonest Due</option>
-            <option value="dueDate:desc">Latest Due</option>
-            <option value="title:asc">Alphabetical (A-Z)</option>
-          </select>
-        </div>
-      </div>
 
       {/* Error state */}
       {error && (
@@ -383,7 +350,7 @@ const Dashboard = () => {
             <div className="pagination-container">
               <button 
                 className="pagination-nav-btn" 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -393,7 +360,7 @@ const Dashboard = () => {
                   <button
                     key={p}
                     className={`pagination-page-num ${currentPage === p ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(p)}
+                    onClick={() => handlePageChange(p)}
                   >
                     {p}
                   </button>
@@ -401,7 +368,7 @@ const Dashboard = () => {
               </div>
               <button 
                 className="pagination-nav-btn" 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
                 Next

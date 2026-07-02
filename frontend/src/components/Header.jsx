@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Menu, User, Sun, Moon, Search } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import './Header.css';
@@ -12,6 +12,29 @@ const Header = () => {
 
   const { user, token, logout } = useContext(AuthContext);
   const isAuthenticated = !!token;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get('search') || '';
+  const priority = searchParams.get('priority') || '';
+  const status = searchParams.get('status') || '';
+  const sortBy = searchParams.get('sortBy') || 'createdAt:desc';
+
+  const handleParamChange = (key, value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set(key, value);
+    } else {
+      newParams.delete(key);
+    }
+    // Reset page to 1 when search or filter changes
+    newParams.delete('page');
+    setSearchParams(newParams);
+
+    // If user is on a different page, route them back to dashboard with the queries
+    if (window.location.pathname !== '/') {
+      navigate(`/?${newParams.toString()}`);
+    }
+  };
 
   // Toggle theme (Dark Mode bonus)
   const toggleTheme = () => {
@@ -44,6 +67,8 @@ const Header = () => {
   };
 
   const handleLogoClick = () => {
+    // Clear filters and go home
+    setSearchParams({});
     navigate('/');
   };
 
@@ -56,15 +81,64 @@ const Header = () => {
           <span>TaskMate</span>
         </div>
 
-        {/* Middle: Airbnb style Mock Search Pill */}
-        <div className="search-pill">
-          <span className="search-pill-item">Search tasks</span>
-          <span className="search-pill-item muted">Priority</span>
-          <span className="search-pill-item muted">Status</span>
-          <button className="search-pill-btn">
-            <Search size={14} />
-          </button>
-        </div>
+        {/* Middle: Airbnb style Interactive Search Pill */}
+        {isAuthenticated && (
+          <div className="search-pill">
+            <div className="search-pill-item">
+              <input
+                type="text"
+                className="search-pill-input"
+                placeholder="Search tasks..."
+                value={search}
+                onChange={(e) => handleParamChange('search', e.target.value)}
+              />
+            </div>
+            
+            <div className="search-pill-item">
+              <select
+                className="search-pill-select"
+                value={priority}
+                onChange={(e) => handleParamChange('priority', e.target.value)}
+              >
+                <option value="">Priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div className="search-pill-item">
+              <select
+                className="search-pill-select"
+                value={status}
+                onChange={(e) => handleParamChange('status', e.target.value)}
+              >
+                <option value="">Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <div className="search-pill-item last">
+              <select
+                className="search-pill-select"
+                value={sortBy}
+                onChange={(e) => handleParamChange('sortBy', e.target.value)}
+                style={{ minWidth: '85px' }}
+              >
+                <option value="createdAt:desc">Sort: Newest</option>
+                <option value="dueDate:asc">Sort: Soonest</option>
+                <option value="dueDate:desc">Sort: Latest</option>
+                <option value="title:asc">Sort: A-Z</option>
+              </select>
+            </div>
+            
+            <button className="search-pill-btn" onClick={() => navigate('/')}>
+              <Search size={14} />
+            </button>
+          </div>
+        )}
 
         {/* Right: Actions */}
         <div className="header-actions">

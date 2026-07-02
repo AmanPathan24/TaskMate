@@ -63,19 +63,50 @@
   color: var(--text-main);
   padding-right: 16px;
   border-right: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
 }
 
 .search-pill-item:not(:first-child) {
   padding-left: 16px;
 }
 
-.search-pill-item.active {
-  color: var(--text-main);
+.search-pill-item.last {
+  border-right: none;
 }
 
-.search-pill-item.muted {
+.search-pill-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  width: 105px;
+}
+
+.search-pill-input::placeholder {
   color: var(--text-muted);
-  font-weight: 400;
+  font-weight: 500;
+}
+
+.search-pill-select {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  padding-right: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.search-pill-select option {
+  background-color: var(--card-bg);
+  color: var(--text-main);
 }
 
 .search-pill-btn {

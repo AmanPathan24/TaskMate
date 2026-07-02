@@ -28,8 +28,8 @@ PORT=5000
 JWT_SECRET=your_jwt_secret_here
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/taskmate?retryWrites=true&w=majority
 CLOUD_NAME=your_cloudinary_cloud_name
-CLOUD_API_KEY=your_cloudinary_api_key
-API_KEY_SECRET=your_cloudinary_api_secret
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_KEY_SECRET=your_cloudinary_api_secret
 ```
 
 ### 1. MongoDB Atlas Setup (How to get MONGO_URI)
@@ -46,8 +46,8 @@ API_KEY_SECRET=your_cloudinary_api_secret
 2. Open your **Cloudinary Dashboard**.
 3. Under the **Product Environment Settings** section, copy the following values:
    - **Cloud Name** -> set as `CLOUD_NAME`
-   - **API Key** -> set as `CLOUD_API_KEY`
-   - **API Secret** -> set as `API_KEY_SECRET`
+   - **API Key** -> set as `CLOUDINARY_API_KEY`
+   - **API Secret** -> set as `CLOUDINARY_API_KEY_SECRET`
 
 ---
 
