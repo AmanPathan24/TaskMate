@@ -37,11 +37,11 @@ CLOUDINARY_API_KEY_SECRET=your_cloudinary_api_secret
 ### 1. MongoDB Atlas Setup (How to get MONGO_URI)
 1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign in.
 2. Build a free shared cluster.
-3. Go to **Database Access** in the left sidebar: Create a database user (e.g. name `amanap`) with a secure password (e.g. `FSgvh4WkZ6TBeqgg`).
+3. Go to **Database Access** in the left sidebar: Create a database user with a secure password.
 4. Go to **Network Access** in the left sidebar: Click **Add IP Address** and select **Allow Access From Anywhere** (IP `0.0.0.0/0`) so Render and local hosts can connect.
 5. Go to **Database** (clusters page): Click **Connect** next to your cluster.
 6. Select **Drivers** and copy the connection string.
-7. Append `/taskmate` before the `?` query parameter to name your database (e.g. `mongodb+srv://amanap:FSgvh4WkZ6TBeqgg@cluster0.niaxfsm.mongodb.net/taskmate?appName=Cluster0`).
+7. Append `/taskmate` before the `?` query parameter to name your database.
 
 ### 2. Cloudinary Setup (How to get Cloudinary Variables)
 1. Go to [Cloudinary](https://cloudinary.com/) and register a free account.
