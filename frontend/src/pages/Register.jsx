@@ -8,11 +8,18 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [profileFile, setProfileFile] = useState(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileFile(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +37,15 @@ const Register = () => {
 
     setIsSubmitting(true);
     try {
-      await register(name, email, password);
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      if (profileFile) {
+        formData.append('profileImage', profileFile);
+      }
+
+      await register(formData);
       navigate('/');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
@@ -90,6 +105,27 @@ const Register = () => {
                 required
               />
               <label htmlFor="password" className="form-label">Password</label>
+            </div>
+
+            {/* Profile Upload Field */}
+            <div className="modal-form-group" style={{ gap: '8px' }}>
+              <label htmlFor="profileImage" style={{ fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                Profile Photo (Optional)
+              </label>
+              <input
+                id="profileImage"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{
+                  padding: '10px',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--border-radius-sm)',
+                  backgroundColor: 'var(--card-bg)',
+                  color: 'var(--text-main)',
+                  cursor: 'pointer'
+                }}
+              />
             </div>
 
             <button type="submit" className="auth-btn" disabled={isSubmitting}>

@@ -80,7 +80,12 @@ const Header = () => {
             <div className="profile-trigger" onClick={() => setDropdownOpen(!dropdownOpen)}>
               <Menu size={18} className="profile-trigger-menu" />
               <div className="profile-avatar">
-                {isAuthenticated && user?.name ? (
+                {isAuthenticated && user?.profileImage ? (
+                  <img 
+                    src={user.profileImage.startsWith('http') ? user.profileImage : `http://localhost:5000${user.profileImage}`} 
+                    alt={user.name} 
+                  />
+                ) : isAuthenticated && user?.name ? (
                   user.name.charAt(0).toUpperCase()
                 ) : (
                   <User size={18} />

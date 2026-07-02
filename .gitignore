@@ -7,6 +7,10 @@ yarn-error.log
 .env.development.local
 .env.test.local
 .env.production.local
+.env.example
+backend/.env.example
+*.docx
+*machine_test_doc*
 
 # IDE
 .vscode/

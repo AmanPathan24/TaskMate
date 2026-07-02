@@ -23,6 +23,10 @@ const Dashboard = () => {
   const [priorityFilter, setPriorityFilter] = useState('');
   const [sortBy, setSortBy] = useState('createdAt:desc');
 
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   // Modal States
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -45,6 +49,8 @@ const Dashboard = () => {
       if (statusFilter) queryParams.append('status', statusFilter);
       if (priorityFilter) queryParams.append('priority', priorityFilter);
       if (sortBy) queryParams.append('sortBy', sortBy);
+      queryParams.append('page', currentPage);
+      queryParams.append('limit', 6);
 
       const response = await fetch(`http://localhost:5000/api/tasks?${queryParams.toString()}`, {
         headers: {
@@ -57,7 +63,8 @@ const Dashboard = () => {
       }
 
       const data = await response.json();
-      setTasks(data);
+      setTasks(data.tasks || []);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       setError(err.message || 'Error fetching tasks');
     } finally {
@@ -65,11 +72,17 @@ const Dashboard = () => {
     }
   };
 
+  // Reset page to 1 on search/filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter, priorityFilter, sortBy]);
+
+  // Load tasks on mount or dependency change
   useEffect(() => {
     if (isAuthenticated) {
       fetchTasks();
     }
-  }, [isAuthenticated, search, statusFilter, priorityFilter, sortBy]);
+  }, [isAuthenticated, currentPage, search, statusFilter, priorityFilter, sortBy]);
 
   // Handle Modal Open (Create/Edit)
   const openModal = (task = null) => {
@@ -308,61 +321,94 @@ const Dashboard = () => {
           </button>
         </div>
       ) : (
-        <div className="tasks-grid">
-          {tasks.map((task) => (
-            <div key={task.id} className="task-card">
-              <div className="task-card-header">
-                <div className="task-badges">
-                  <span className={`badge priority-${task.priority}`}>
-                    {task.priority}
-                  </span>
-                  <span className={`badge status-${task.status}`}>
-                    {task.status.replace('-', ' ')}
-                  </span>
+        <>
+          <div className="tasks-grid">
+            {tasks.map((task) => (
+              <div key={task.id} className="task-card">
+                <div className="task-card-header">
+                  <div className="task-badges">
+                    <span className={`badge priority-${task.priority}`}>
+                      {task.priority}
+                    </span>
+                    <span className={`badge status-${task.status}`}>
+                      {task.status.replace('-', ' ')}
+                    </span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="task-card-checkbox"
+                    checked={task.status === 'completed'}
+                    onChange={() => handleToggleStatus(task)}
+                    title="Toggle Completion"
+                  />
                 </div>
-                <input
-                  type="checkbox"
-                  className="task-card-checkbox"
-                  checked={task.status === 'completed'}
-                  onChange={() => handleToggleStatus(task)}
-                  title="Toggle Completion"
-                />
-              </div>
 
-              <div className="task-card-content">
-                <h3 className={`task-card-title ${task.status === 'completed' ? 'completed' : ''}`}>
-                  {task.title}
-                </h3>
-                {task.description && (
-                  <p className="task-card-desc">{task.description}</p>
-                )}
-              </div>
+                <div className="task-card-content">
+                  <h3 className={`task-card-title ${task.status === 'completed' ? 'completed' : ''}`}>
+                    {task.title}
+                  </h3>
+                  {task.description && (
+                    <p className="task-card-desc">{task.description}</p>
+                  )}
+                </div>
 
-              <div className="task-card-footer">
-                <span className="task-date-info">
-                  <Calendar size={14} />
-                  {formatDate(task.dueDate)}
-                </span>
-                <div className="task-card-actions">
-                  <button 
-                    className="action-btn" 
-                    onClick={() => openModal(task)} 
-                    title="Edit Task"
-                  >
-                    <Edit2 size={15} />
-                  </button>
-                  <button 
-                    className="action-btn btn-delete" 
-                    onClick={() => handleDeleteTask(task.id)} 
-                    title="Delete Task"
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                <div className="task-card-footer">
+                  <span className="task-date-info">
+                    <Calendar size={14} />
+                    {formatDate(task.dueDate)}
+                  </span>
+                  <div className="task-card-actions">
+                    <button 
+                      className="action-btn" 
+                      onClick={() => openModal(task)} 
+                      title="Edit Task"
+                    >
+                      <Edit2 size={15} />
+                    </button>
+                    <button 
+                      className="action-btn btn-delete" 
+                      onClick={() => handleDeleteTask(task.id)} 
+                      title="Delete Task"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Pagination Navigation */}
+          {totalPages > 1 && (
+            <div className="pagination-container">
+              <button 
+                className="pagination-nav-btn" 
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <div className="pagination-pages">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    className={`pagination-page-num ${currentPage === p ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+              <button 
+                className="pagination-nav-btn" 
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Task Creation & Editing Modal */}

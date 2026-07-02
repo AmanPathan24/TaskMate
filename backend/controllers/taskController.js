@@ -12,10 +12,10 @@ const mapTask = (t) => ({
   createdAt: t.createdAt
 });
 
-// Get all tasks for the logged-in student (with search, filter, sort)
+// Get all tasks for the logged-in student (with search, filter, sort, pagination)
 const getTasks = async (req, res) => {
   try {
-    const { search, status, priority, sortBy } = req.query;
+    const { search, status, priority, sortBy, page = 1, limit = 6 } = req.query;
     
     // Base filter
     const filter = { userId: req.userId };
@@ -45,8 +45,22 @@ const getTasks = async (req, res) => {
       sortOption = { [field]: order === 'desc' ? -1 : 1 };
     }
 
-    const studentTasks = await Task.find(filter).sort(sortOption);
-    res.json(studentTasks.map(mapTask));
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const totalTasks = await Task.countDocuments(filter);
+    const studentTasks = await Task.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNum);
+
+    res.json({
+      tasks: studentTasks.map(mapTask),
+      totalPages: Math.ceil(totalTasks / limitNum),
+      currentPage: pageNum,
+      totalTasks
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error fetching tasks' });
   }

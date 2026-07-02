@@ -18,10 +18,17 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
+    // Check if profile image file was uploaded
+    let profileImage = null;
+    if (req.file) {
+      profileImage = req.file.path; // Cloudinary secure HTTPS URL
+    }
+
     const newUser = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      profileImage
     });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -31,11 +38,12 @@ const register = async (req, res) => {
       user: {
         id: newUser._id,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        profileImage: newUser.profileImage
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(500).json({ message: error.message || 'Server error during registration' });
   }
 };
 
@@ -65,7 +73,8 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        profileImage: user.profileImage
       }
     });
   } catch (error) {
@@ -84,7 +93,8 @@ const getProfile = async (req, res) => {
     res.json({
       id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      profileImage: user.profileImage
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error fetching profile' });
