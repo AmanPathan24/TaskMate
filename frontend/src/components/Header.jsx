@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Menu, User, Sun, Moon, Search } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { API_URL } from '../config';
 import './Header.css';
 
 const Header = () => {
@@ -156,7 +157,7 @@ const Header = () => {
               <div className="profile-avatar">
                 {isAuthenticated && user?.profileImage ? (
                   <img 
-                    src={user.profileImage.startsWith('http') ? user.profileImage : `http://localhost:5000${user.profileImage}`} 
+                    src={user.profileImage.startsWith('http') ? user.profileImage : `${API_URL}${user.profileImage}`} 
                     alt={user.name} 
                   />
                 ) : isAuthenticated && user?.name ? (

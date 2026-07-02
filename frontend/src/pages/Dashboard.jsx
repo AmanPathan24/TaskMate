@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { API_URL } from '../config';
 import { 
   Plus, Search, Edit2, Trash2, Calendar, 
   X, AlertCircle, ClipboardList 
@@ -71,7 +72,7 @@ const Dashboard = () => {
       queryParams.append('page', currentPage);
       queryParams.append('limit', 6);
 
-      const response = await fetch(`http://localhost:5000/api/tasks?${queryParams.toString()}`, {
+      const response = await fetch(`${API_URL}/api/tasks?${queryParams.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -141,7 +142,7 @@ const Dashboard = () => {
       let response;
       if (editingTask) {
         // Update
-        response = await fetch(`http://localhost:5000/api/tasks/${editingTask.id}`, {
+        response = await fetch(`${API_URL}/api/tasks/${editingTask.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -151,7 +152,7 @@ const Dashboard = () => {
         });
       } else {
         // Create
-        response = await fetch('http://localhost:5000/api/tasks', {
+        response = await fetch(`${API_URL}/api/tasks`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -177,7 +178,7 @@ const Dashboard = () => {
   const handleToggleStatus = async (task) => {
     try {
       const nextStatus = task.status === 'completed' ? 'pending' : 'completed';
-      const response = await fetch(`http://localhost:5000/api/tasks/${task.id}`, {
+      const response = await fetch(`${API_URL}/api/tasks/${task.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +199,7 @@ const Dashboard = () => {
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -262,8 +263,6 @@ const Dashboard = () => {
           Create Task
         </button>
       </div>
-
-
 
       {/* Error state */}
       {error && (
