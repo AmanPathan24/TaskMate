@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CheckSquare, Menu, User, Sun, Moon, Search } from 'lucide-react';
+import { Menu, User, Sun, Moon, Search } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import './Header.css';
 
@@ -52,7 +52,7 @@ const Header = () => {
       <div className="container header-container">
         {/* Left: Brand Logo */}
         <div className="header-logo" onClick={handleLogoClick}>
-          <CheckSquare size={28} />
+          <img src="/TaskMate Logo.png" alt="TaskMate Logo" className="header-logo-img" />
           <span>TaskMate</span>
         </div>
 
